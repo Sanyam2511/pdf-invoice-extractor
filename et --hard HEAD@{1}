@@ -1,0 +1,6 @@
+[33m33856a5[m[33m ([m[1;36mHEAD[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: pull origin main --rebase (start): checkout 33856a59bf609f8ed5a783207fdf97c9bdc8cb50
+[33m161f423[m[33m ([m[1;32mmain[m[33m)[m HEAD@{1}: commit: Initial commit of monorepo
+[33m12eeb90[m HEAD@{2}: commit: Initial Commit
+[33mb7d2403[m HEAD@{3}: commit: feat(create-turbo): apply package-manager transform
+[33ma7209dd[m HEAD@{4}: commit: feat(create-turbo): apply official-starter transform
+[33ma243c0e[m HEAD@{5}: commit (initial): feat(create-turbo): create basic
