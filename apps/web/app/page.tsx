@@ -1,20 +1,72 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic'; // Import the dynamic function
+import { toast } from "sonner";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PdfViewer } from '@/components/PdfViewer';
+import { Button } from '@/components/ui/button';
+// We are removing the direct import of PdfViewer here
 import { PdfUploader } from '@/components/PdfUploader';
+import { InvoiceForm } from '@/components/InvoiceForm';
+import { Invoice } from '@/lib/types';
+
+// Use dynamic import to load the PdfViewer only on the client-side
+const PdfViewer = dynamic(() => import('@/components/PdfViewer').then(mod => mod.PdfViewer), {
+  ssr: false, // This is the key: Server-Side Rendering is disabled
+  loading: () => <p className="text-center">Loading PDF Viewer...</p>, // A nice loading message
+});
+
 
 export default function Page() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [extractedData, setExtractedData] = useState<Invoice | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleExtract = async () => {
+    if (!selectedFile) return;
+
+    setIsLoading(true);
+    setExtractedData(null);
+    toast.info("AI extraction has started...", {
+      description: "This may take a moment. Please wait.",
+    });
+
+    const formData = new FormData();
+    formData.append('invoice', selectedFile);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/extract', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || `Error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      setExtractedData(result);
+      toast.success("Extraction Successful!", {
+        description: "The invoice data has been populated in the form.",
+      });
+    } catch (error: any) {
+      console.error('Extraction failed:', error);
+      toast.error("Extraction Failed", {
+        description: error.message || "Could not extract data from the PDF.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <main className="h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground">
       <ResizablePanelGroup direction="horizontal" className="w-full h-full">
         <ResizablePanel defaultSize={50}>
           <div className="flex h-full items-center justify-center p-6">
@@ -36,14 +88,31 @@ export default function Page() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>
-          <div className="flex h-full items-center justify-center p-6">
-            <Card className="w-full h-full">
+          <div className="flex h-full flex-col p-6 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Upload & Extract</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                <PdfUploader onFileChange={setSelectedFile} />
+                <Button onClick={handleExtract} disabled={!selectedFile || isLoading}>
+                  {isLoading ? 'Extracting...' : 'Extract with AI'}
+                </Button>
+              </CardContent>
+            </Card>
+            <Card className="flex-grow overflow-auto">
               <CardHeader>
                 <CardTitle>Extracted Data</CardTitle>
               </CardHeader>
               <CardContent>
-                <PdfUploader onFileChange={setSelectedFile} />
-                <p className="mt-6">The editable form will be here.</p>
+                {extractedData ? (
+                  <InvoiceForm 
+                    initialData={extractedData} 
+                    originalFile={selectedFile} 
+                  />
+                ) : (
+                  <p className="text-muted-foreground">Data will appear here after extraction.</p>
+                )}
               </CardContent>
             </Card>
           </div>

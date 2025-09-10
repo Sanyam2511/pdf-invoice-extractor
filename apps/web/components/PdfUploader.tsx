@@ -8,10 +8,30 @@ interface PdfUploaderProps {
 }
 
 export function PdfUploader({ onFileChange }: PdfUploaderProps) {
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      onFileChange(file);
+    if (!file) return;
+
+    onFileChange(file);
+
+    const formData = new FormData();
+    formData.append('invoice', file); 
+
+    try {
+      const response = await fetch('http://localhost:8000/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('File upload failed');
+      }
+
+      const result = await response.json();
+      console.log('File uploaded successfully:', result);
+
+    } catch (error) {
+      console.error('Error uploading file:', error);
     }
   };
 
