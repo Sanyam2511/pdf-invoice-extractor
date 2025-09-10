@@ -114,7 +114,8 @@ export default function InvoicesPage() {
                   <TableCell>{invoice.invoice.date}</TableCell>
                   <TableCell>{invoice.invoice.total} {invoice.invoice.currency}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="outline" size="sm" className="mr-2">Edit</Button>
+                    <Button variant="outline" size="sm" className="mr-2" onClick={() => router.push(`/invoices/${invoice._id}`)} >
+                      Edit</Button>
                     {/* Updated Delete Button */}
                     <Button variant="destructive" size="sm" onClick={() => handleDelete(invoice._id)}>Delete</Button>
                   </TableCell>

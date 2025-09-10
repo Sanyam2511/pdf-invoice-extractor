@@ -12,18 +12,18 @@ import { Trash2 } from 'lucide-react';
 
 interface InvoiceFormProps {
   initialData: Partial<Invoice>;
-  // Add a prop to receive the original file
-  originalFile: File | null; 
+  originalFile: File | null;
+  invoiceId?: string; // Add optional invoiceId prop for edit mode
 }
 
-// The rest of the component is mostly the same...
+// ... (defaultInvoice and other handlers remain the same)
 const defaultInvoice: Invoice = {
   vendor: { name: '', address: '', taxId: '' },
   invoice: { number: '', date: '', currency: '', subtotal: 0, total: 0, taxPercent: 0, poNumber: '', poDate: '' },
   lineItems: [],
 };
 
-export function InvoiceForm({ initialData, originalFile }: InvoiceFormProps) {
+export function InvoiceForm({ initialData, originalFile, invoiceId }: InvoiceFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<Invoice>({
     ...defaultInvoice,
@@ -44,75 +44,57 @@ export function InvoiceForm({ initialData, originalFile }: InvoiceFormProps) {
     });
   }, [initialData]);
 
-  // ... (handleInputChange, handleLineItemChange, addLineItem, removeLineItem are all the same)
-  const handleInputChange = (
-    section: 'vendor' | 'invoice',
-    field: keyof Invoice['vendor'] | keyof Invoice['invoice'],
-    value: string | number
-  ) => {
-    setFormData((prev) => ({ ...prev, [section]: { ...prev[section], [field]: value } }));
-  };
-  const handleLineItemChange = (index: number, field: keyof LineItem, value: string | number) => {
-    const updatedLineItems = formData.lineItems.map((item, i) =>
-      i === index ? { ...item, [field]: value } : item
-    );
-    setFormData((prev) => ({ ...prev, lineItems: updatedLineItems }));
-  };
-  const addLineItem = () => {
-    setFormData((prev) => ({ ...prev, lineItems: [...prev.lineItems, { description: '', unitPrice: 0, quantity: 0, total: 0 }] }));
-  };
-  const removeLineItem = (index: number) => {
-    const updatedLineItems = formData.lineItems.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, lineItems: updatedLineItems }));
-  };
+  // ... (handleInputChange, handleLineItemChange, etc. are all the same)
+  const handleInputChange = (section: 'vendor' | 'invoice', field: keyof Invoice['vendor'] | keyof Invoice['invoice'], value: string | number) => {setFormData((prev) => ({ ...prev, [section]: { ...prev[section], [field]: value } })); };
+  const handleLineItemChange = (index: number, field: keyof LineItem, value: string | number) => { const updatedLineItems = formData.lineItems.map((item, i) => i === index ? { ...item, [field]: value } : item); setFormData((prev) => ({ ...prev, lineItems: updatedLineItems })); };
+  const addLineItem = () => { setFormData((prev) => ({ ...prev, lineItems: [...prev.lineItems, { description: '', unitPrice: 0, quantity: 0, total: 0 }] })); };
+  const removeLineItem = (index: number) => { const updatedLineItems = formData.lineItems.filter((_, i) => i !== index); setFormData((prev) => ({ ...prev, lineItems: updatedLineItems })); };
 
-
-  // --- FINAL, CORRECTED SAVE FUNCTION ---
   const handleSave = async () => {
-    if (!originalFile) {
-      toast.error("Original file not found.");
-      return;
-    }
-
     setIsSaving(true);
-    toast.info("Saving invoice...");
+    toast.info(invoiceId ? "Updating invoice..." : "Saving invoice...");
 
-    // Create a final payload that includes the required file info
-    const payload = {
+    // Determine URL and Method based on if we are editing or creating
+    const url = invoiceId 
+      ? `http://localhost:8000/api/invoices/${invoiceId}` 
+      : 'http://localhost:8000/api/invoices';
+    const method = invoiceId ? 'PUT' : 'POST';
+
+    // In create mode, we need the file info. In edit mode, we don't.
+    const payload = invoiceId ? formData : {
       ...formData,
-      fileId: `${Date.now()}-${originalFile.name}`,
-      fileName: originalFile.name,
+      fileId: `${Date.now()}-${originalFile?.name}`,
+      fileName: originalFile?.name,
     };
 
     try {
-      const response = await fetch('http://localhost:8000/api/invoices', {
-        method: 'POST',
+      const response = await fetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        // Try to parse error from backend for more details
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save invoice');
+        throw new Error(errorData.error || `Failed to ${method === 'POST' ? 'save' : 'update'} invoice`);
       }
 
-      const savedInvoice = await response.json();
-      toast.success('Invoice saved successfully!');
-      router.push('/invoices');
+      toast.success(`Invoice ${method === 'POST' ? 'saved' : 'updated'} successfully!`);
+      router.push('/invoices'); // Go to list page on success
+      router.refresh(); // Tell Next.js to refetch the data on the list page
 
     } catch (error: any) {
-      console.error('Error saving invoice:', error);
-      toast.error('Failed to save invoice.', { description: error.message });
+      console.error(`Error ${method === 'POST' ? 'saving' : 'updating'} invoice:`, error);
+      toast.error(`Failed to ${method === 'POST' ? 'save' : 'update'} invoice.`, { description: error.message });
     } finally {
       setIsSaving(false);
     }
   };
-  // ------------------------------------
 
   return (
     // The JSX for the form is exactly the same as before
     <div className="space-y-6">
+      {/* All the Card components for Vendor, Invoice, Line Items... */}
       <Card>
         <CardHeader><CardTitle>Vendor Details</CardTitle></CardHeader>
         <CardContent className="grid sm:grid-cols-2 gap-4">
@@ -145,7 +127,7 @@ export function InvoiceForm({ initialData, originalFile }: InvoiceFormProps) {
         </CardContent>
       </Card>
       <Button onClick={handleSave} className="w-full" disabled={isSaving}>
-        {isSaving ? 'Saving...' : 'Save Invoice'}
+        {isSaving ? (invoiceId ? 'Updating...' : 'Saving...') : (invoiceId ? 'Update Invoice' : 'Save Invoice')}
       </Button>
     </div>
   );
