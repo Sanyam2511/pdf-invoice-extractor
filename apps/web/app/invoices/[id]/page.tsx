@@ -18,7 +18,7 @@ export default function EditInvoicePage() {
     if (id) {
       const fetchInvoice = async () => {
         try {
-          const response = await fetch(`http://localhost:8000/api/invoices/${id}`);
+          const response = await fetch(`/api/invoices/${id}`);
           if (!response.ok) {
             throw new Error('Invoice not found');
           }
@@ -42,14 +42,14 @@ export default function EditInvoicePage() {
   if (!invoice) {
     return <div className="container mx-auto p-8">Invoice not found.</div>;
   }
-
+  
   return (
     <div className="container mx-auto p-8">
         <h1 className="text-3xl font-bold mb-6">Edit Invoice</h1>
         <InvoiceForm
           initialData={invoice}
-          originalFile={null} // We don't need the original file for editing
-          invoiceId={id as string} // Pass the ID to the form
+          originalFile={null} 
+          invoiceId={id as string} 
         />
     </div>
   );

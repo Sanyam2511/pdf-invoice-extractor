@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import dynamic from 'next/dynamic'; // Import the dynamic function
+import dynamic from 'next/dynamic'; 
 import { toast } from "sonner";
 import {
   ResizableHandle,
@@ -10,15 +10,13 @@ import {
 } from "@/components/ui/resizable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
-// We are removing the direct import of PdfViewer here
 import { PdfUploader } from '@/components/PdfUploader';
 import { InvoiceForm } from '@/components/InvoiceForm';
 import { Invoice } from '@/lib/types';
 
-// Use dynamic import to load the PdfViewer only on the client-side
 const PdfViewer = dynamic(() => import('@/components/PdfViewer').then(mod => mod.PdfViewer), {
-  ssr: false, // This is the key: Server-Side Rendering is disabled
-  loading: () => <p className="text-center">Loading PDF Viewer...</p>, // A nice loading message
+  ssr: false,
+  loading: () => <p className="text-center">Loading PDF Viewer...</p>, 
 });
 
 
@@ -40,7 +38,7 @@ export default function Page() {
     formData.append('invoice', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:8000/api/extract', {
+      const response = await fetch('/api/extract', {
         method: 'POST',
         body: formData,
       });

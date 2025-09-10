@@ -13,10 +13,9 @@ import { Trash2 } from 'lucide-react';
 interface InvoiceFormProps {
   initialData: Partial<Invoice>;
   originalFile: File | null;
-  invoiceId?: string; // Add optional invoiceId prop for edit mode
+  invoiceId?: string; 
 }
 
-// ... (defaultInvoice and other handlers remain the same)
 const defaultInvoice: Invoice = {
   vendor: { name: '', address: '', taxId: '' },
   invoice: { number: '', date: '', currency: '', subtotal: 0, total: 0, taxPercent: 0, poNumber: '', poDate: '' },
@@ -44,23 +43,37 @@ export function InvoiceForm({ initialData, originalFile, invoiceId }: InvoiceFor
     });
   }, [initialData]);
 
-  // ... (handleInputChange, handleLineItemChange, etc. are all the same)
-  const handleInputChange = (section: 'vendor' | 'invoice', field: keyof Invoice['vendor'] | keyof Invoice['invoice'], value: string | number) => {setFormData((prev) => ({ ...prev, [section]: { ...prev[section], [field]: value } })); };
-  const handleLineItemChange = (index: number, field: keyof LineItem, value: string | number) => { const updatedLineItems = formData.lineItems.map((item, i) => i === index ? { ...item, [field]: value } : item); setFormData((prev) => ({ ...prev, lineItems: updatedLineItems })); };
-  const addLineItem = () => { setFormData((prev) => ({ ...prev, lineItems: [...prev.lineItems, { description: '', unitPrice: 0, quantity: 0, total: 0 }] })); };
-  const removeLineItem = (index: number) => { const updatedLineItems = formData.lineItems.filter((_, i) => i !== index); setFormData((prev) => ({ ...prev, lineItems: updatedLineItems })); };
+  const handleInputChange = (section: 'vendor' | 'invoice', field: keyof Invoice['vendor'] | keyof Invoice['invoice'], value: string | number) => {
+    setFormData((prev) => ({ ...prev, [section]: { ...prev[section], [field]: value } }));
+  };
+  const handleLineItemChange = (index: number, field: keyof LineItem, value: string | number) => {
+    const updatedLineItems = formData.lineItems.map((item, i) => i === index ? { ...item, [field]: value } : item);
+    setFormData((prev) => ({ ...prev, lineItems: updatedLineItems }));
+  };
+  const addLineItem = () => {
+    setFormData((prev) => ({ ...prev, lineItems: [...prev.lineItems, { description: '', unitPrice: 0, quantity: 0, total: 0 }] }));
+  };
+  const removeLineItem = (index: number) => {
+    const updatedLineItems = formData.lineItems.filter((_, i) => i !== index);
+    setFormData((prev) => ({ ...prev, lineItems: updatedLineItems }));
+  };
 
   const handleSave = async () => {
+    if (!formData.vendor.name || !formData.invoice.number) {
+      toast.error("Validation Failed", {
+        description: "Please make sure 'Vendor Name' and 'Invoice Number' are filled out.",
+      });
+      return;
+    }
+    
     setIsSaving(true);
     toast.info(invoiceId ? "Updating invoice..." : "Saving invoice...");
 
-    // Determine URL and Method based on if we are editing or creating
     const url = invoiceId 
-      ? `http://localhost:8000/api/invoices/${invoiceId}` 
-      : 'http://localhost:8000/api/invoices';
+      ? `/api/invoices/${invoiceId}` 
+      : '/api/invoices';
     const method = invoiceId ? 'PUT' : 'POST';
 
-    // In create mode, we need the file info. In edit mode, we don't.
     const payload = invoiceId ? formData : {
       ...formData,
       fileId: `${Date.now()}-${originalFile?.name}`,
@@ -80,8 +93,8 @@ export function InvoiceForm({ initialData, originalFile, invoiceId }: InvoiceFor
       }
 
       toast.success(`Invoice ${method === 'POST' ? 'saved' : 'updated'} successfully!`);
-      router.push('/invoices'); // Go to list page on success
-      router.refresh(); // Tell Next.js to refetch the data on the list page
+      router.push('/invoices');
+      router.refresh(); 
 
     } catch (error: any) {
       console.error(`Error ${method === 'POST' ? 'saving' : 'updating'} invoice:`, error);
@@ -92,24 +105,22 @@ export function InvoiceForm({ initialData, originalFile, invoiceId }: InvoiceFor
   };
 
   return (
-    // The JSX for the form is exactly the same as before
     <div className="space-y-6">
-      {/* All the Card components for Vendor, Invoice, Line Items... */}
       <Card>
         <CardHeader><CardTitle>Vendor Details</CardTitle></CardHeader>
         <CardContent className="grid sm:grid-cols-2 gap-4">
-          <div className="space-y-1"><Label htmlFor="vendor-name">Name</Label><Input id="vendor-name" value={formData.vendor.name} onChange={(e) => handleInputChange('vendor', 'name', e.target.value)} /></div>
-          <div className="space-y-1"><Label htmlFor="vendor-taxId">Tax ID</Label><Input id="vendor-taxId" value={formData.vendor.taxId} onChange={(e) => handleInputChange('vendor', 'taxId', e.target.value)} /></div>
-          <div className="space-y-1 sm:col-span-2"><Label htmlFor="vendor-address">Address</Label><Input id="vendor-address" value={formData.vendor.address} onChange={(e) => handleInputChange('vendor', 'address', e.target.value)} /></div>
+          <div className="space-y-1"><Label htmlFor="vendor-name">Name</Label><Input id="vendor-name" value={formData.vendor.name || ''} onChange={(e) => handleInputChange('vendor', 'name', e.target.value)} /></div>
+          <div className="space-y-1"><Label htmlFor="vendor-taxId">Tax ID</Label><Input id="vendor-taxId" value={formData.vendor.taxId || ''} onChange={(e) => handleInputChange('vendor', 'taxId', e.target.value)} /></div>
+          <div className="space-y-1 sm:col-span-2"><Label htmlFor="vendor-address">Address</Label><Input id="vendor-address" value={formData.vendor.address || ''} onChange={(e) => handleInputChange('vendor', 'address', e.target.value)} /></div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader><CardTitle>Invoice Details</CardTitle></CardHeader>
         <CardContent className="grid sm:grid-cols-2 gap-4">
-          <div className="space-y-1"><Label htmlFor="invoice-number">Invoice Number</Label><Input id="invoice-number" value={formData.invoice.number} onChange={(e) => handleInputChange('invoice', 'number', e.target.value)} /></div>
-          <div className="space-y-1"><Label htmlFor="invoice-date">Date</Label><Input id="invoice-date" value={formData.invoice.date} onChange={(e) => handleInputChange('invoice', 'date', e.target.value)} /></div>
-          <div className="space-y-1"><Label htmlFor="invoice-total">Total Amount</Label><Input id="invoice-total" type="number" value={formData.invoice.total} onChange={(e) => handleInputChange('invoice', 'total', parseFloat(e.target.value))} /></div>
-          <div className="space-y-1"><Label htmlFor="invoice-currency">Currency</Label><Input id="invoice-currency" value={formData.invoice.currency} onChange={(e) => handleInputChange('invoice', 'currency', e.target.value)} /></div>
+          <div className="space-y-1"><Label htmlFor="invoice-number">Invoice Number</Label><Input id="invoice-number" value={formData.invoice.number || ''} onChange={(e) => handleInputChange('invoice', 'number', e.target.value)} /></div>
+          <div className="space-y-1"><Label htmlFor="invoice-date">Date</Label><Input id="invoice-date" value={formData.invoice.date || ''} onChange={(e) => handleInputChange('invoice', 'date', e.target.value)} /></div>
+          <div className="space-y-1"><Label htmlFor="invoice-total">Total Amount</Label><Input id="invoice-total" type="number" value={formData.invoice.total || 0} onChange={(e) => handleInputChange('invoice', 'total', parseFloat(e.target.value) || 0)} /></div>
+          <div className="space-y-1"><Label htmlFor="invoice-currency">Currency</Label><Input id="invoice-currency" value={formData.invoice.currency || ''} onChange={(e) => handleInputChange('invoice', 'currency', e.target.value)} /></div>
         </CardContent>
       </Card>
       <Card>
@@ -117,9 +128,9 @@ export function InvoiceForm({ initialData, originalFile, invoiceId }: InvoiceFor
         <CardContent className="space-y-4">
           {formData.lineItems.map((item, index) => (
             <div key={index} className="flex items-end gap-2">
-              <div className="flex-grow space-y-1"><Label>Description</Label><Input value={item.description} onChange={(e) => handleLineItemChange(index, 'description', e.target.value)} /></div>
-              <div className="space-y-1 w-24"><Label>Quantity</Label><Input type="number" value={item.quantity} onChange={(e) => handleLineItemChange(index, 'quantity', parseFloat(e.target.value))} /></div>
-              <div className="space-y-1 w-24"><Label>Price</Label><Input type="number" value={item.unitPrice} onChange={(e) => handleLineItemChange(index, 'unitPrice', parseFloat(e.target.value))} /></div>
+              <div className="flex-grow space-y-1"><Label>Description</Label><Input value={item.description || ''} onChange={(e) => handleLineItemChange(index, 'description', e.target.value)} /></div>
+              <div className="space-y-1 w-24"><Label>Quantity</Label><Input type="number" value={item.quantity || 0} onChange={(e) => handleLineItemChange(index, 'quantity', parseFloat(e.target.value) || 0)} /></div>
+              <div className="space-y-1 w-24"><Label>Price</Label><Input type="number" value={item.unitPrice || 0} onChange={(e) => handleLineItemChange(index, 'unitPrice', parseFloat(e.target.value) || 0)} /></div>
               <Button variant="outline" size="icon" onClick={() => removeLineItem(index)}><Trash2 className="h-4 w-4" /></Button>
             </div>
           ))}

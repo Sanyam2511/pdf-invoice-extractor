@@ -15,7 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
-// Define a type that includes the MongoDB _id
 type InvoiceWithId = Invoice & { _id: string; fileId: string; fileName: string; };
 
 export default function InvoicesPage() {
@@ -28,7 +27,7 @@ export default function InvoicesPage() {
     const fetchInvoices = async () => {
       setIsLoading(true);
       try {
-        const url = `http://localhost:8000/api/invoices${searchTerm ? `?q=${searchTerm}` : ''}`;
+        const url = `/api/invoices${searchTerm ? `?q=${searchTerm}` : ''}`;
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Failed to fetch invoices');
@@ -50,16 +49,14 @@ export default function InvoicesPage() {
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
-  // --- NEW DELETE FUNCTION ---
   const handleDelete = async (invoiceId: string) => {
-    // Ask for confirmation before deleting
     if (!window.confirm("Are you sure you want to delete this invoice?")) {
       return;
     }
 
     toast.info("Deleting invoice...");
     try {
-      const response = await fetch(`http://localhost:8000/api/invoices/${invoiceId}`, {
+      const response = await fetch(`/api/invoices/${invoiceId}`, {
         method: 'DELETE',
       });
 
@@ -67,7 +64,6 @@ export default function InvoicesPage() {
         throw new Error('Failed to delete invoice');
       }
 
-      // Update the UI by removing the deleted invoice from the state
       setInvoices((prevInvoices) => prevInvoices.filter((invoice) => invoice._id !== invoiceId));
       toast.success("Invoice deleted successfully!");
 
@@ -76,7 +72,6 @@ export default function InvoicesPage() {
       toast.error("Failed to delete invoice.");
     }
   };
-  // --------------------------
 
   return (
     <div className="container mx-auto p-8">
@@ -116,7 +111,6 @@ export default function InvoicesPage() {
                   <TableCell className="text-right">
                     <Button variant="outline" size="sm" className="mr-2" onClick={() => router.push(`/invoices/${invoice._id}`)} >
                       Edit</Button>
-                    {/* Updated Delete Button */}
                     <Button variant="destructive" size="sm" onClick={() => handleDelete(invoice._id)}>Delete</Button>
                   </TableCell>
                 </TableRow>
