@@ -9,6 +9,20 @@ A full-stack web application designed to streamline invoice processing. Users ca
 * **Frontend Application:** [Frontend Site](https://pdf-invoice-extractor-web.vercel.app/)
 * **Backend API:** [Backend Deployment](https://pdf-invoice-extractor-api.vercel.app/)
 
+## Screenshots
+* **Extraction Of PDF and Split Layout:**
+<img width="2174" height="2432" alt="pdf-invoice-extractor-web vercel app_" src="https://github.com/user-attachments/assets/0473f7b8-eee8-4d5a-a75b-26bf587f68d0" />
+
+* **Saving the Extracted Invoice:**
+<img width="2326" height="812" alt="image" src="https://github.com/user-attachments/assets/1a275a5e-24e7-422e-b297-817407d33162" />
+
+* **Editing and Updating the saved Invoice:**
+<img width="2326" height="812" alt="image" src="https://github.com/user-attachments/assets/f1399f44-b89e-4c29-a50a-a5b2f4f4f1b8" />
+
+* **Deleting the Invoice:**
+<img width="2274" height="648" alt="image" src="https://github.com/user-attachments/assets/9454408f-4602-497b-91da-9bb86e7f7af8" />
+<img width="2373" height="1258" alt="image" src="https://github.com/user-attachments/assets/a2ae9f14-75aa-4674-b6e6-58db1e6fc4b0" />
+
 ## Features
 
 * **In-Browser PDF Viewer:** Upload and view any PDF with multi-page navigation.
