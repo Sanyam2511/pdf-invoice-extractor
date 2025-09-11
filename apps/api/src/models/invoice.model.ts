@@ -5,6 +5,8 @@ const LineItemSchema = new Schema({
   unitPrice: { type: Number, required: true },
   quantity: { type: Number, required: true },
   total: { type: Number, required: true },
+  discount: { type: Number },
+  vat: { type: Number }, 
 });
 
 const InvoiceSchema = new Schema({

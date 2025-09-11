@@ -1,13 +1,12 @@
 import { Router } from 'express';
-import multer from 'multer'; // Keep this for now, we will replace with Gemini again
+import multer from 'multer'; 
 import pdf from 'pdf-parse';
 import { Invoice } from '../models/invoice.model';
-import { GoogleGenerativeAI } from '@google/generative-ai'; // Re-adding Gemini
+import { GoogleGenerativeAI } from '@google/generative-ai'; 
 
 const upload = multer({ storage: multer.memoryStorage() });
 const router = Router();
 
-// --- AI EXTRACTION ENDPOINT (using Google Gemini) ---
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
@@ -24,7 +23,7 @@ router.post('/extract', upload.single('invoice'), async (req, res) => {
       {
         "vendor": { "name": "string", "address": "string", "taxId": "string" },
         "invoice": { "number": "string", "date": "string", "currency": "string", "subtotal": "number", "taxPercent": "number", "total": "number", "poNumber": "string", "poDate": "string" },
-        "lineItems": [{ "description": "string", "unitPrice": "number", "quantity": "number", "total": "number" }]
+        "lineItems": [{ "description": "string", "unitPrice": "number", "quantity": "number", "total": "number", "discount": "number", "vat": "number" }]
       }
       Invoice Text: --- ${pdfText} ---
     `;
@@ -39,9 +38,6 @@ router.post('/extract', upload.single('invoice'), async (req, res) => {
   }
 });
 
-// --- DATABASE CRUD ENDPOINTS ---
-
-// CREATE a new invoice
 router.post('/invoices', async (req, res) => {
   try {
     const newInvoice = await Invoice.create(req.body);
@@ -52,7 +48,6 @@ router.post('/invoices', async (req, res) => {
   }
 });
 
-// READ all invoices (with search)
 router.get('/invoices', async (req, res) => {
   try {
     const { q } = req.query;
@@ -69,7 +64,6 @@ router.get('/invoices', async (req, res) => {
   }
 });
 
-// READ a single invoice by ID
 router.get('/invoices/:id', async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
@@ -83,7 +77,6 @@ router.get('/invoices/:id', async (req, res) => {
   }
 });
 
-// UPDATE an invoice by ID
 router.put('/invoices/:id', async (req, res) => {
   try {
     const updatedInvoice = await Invoice.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -97,7 +90,6 @@ router.put('/invoices/:id', async (req, res) => {
   }
 });
 
-// DELETE an invoice by ID
 router.delete('/invoices/:id', async (req, res) => {
   try {
     const deletedInvoice = await Invoice.findByIdAndDelete(req.params.id);

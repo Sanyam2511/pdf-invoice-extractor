@@ -3,6 +3,8 @@ export interface LineItem {
   unitPrice: number;
   quantity: number;
   total: number;
+  discount?: number; 
+  vat?: number; 
 }
 
 export interface Vendor {

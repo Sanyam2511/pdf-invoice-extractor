@@ -1,24 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import dynamic from 'next/dynamic'; 
+import dynamic from 'next/dynamic';
 import { toast } from "sonner";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Invoice } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { PdfUploader } from '@/components/PdfUploader';
-import { InvoiceForm } from '@/components/InvoiceForm';
-import { Invoice } from '@/lib/types';
+import { DataPanel } from '@/components/DataPanel'; 
 
 const PdfViewer = dynamic(() => import('@/components/PdfViewer').then(mod => mod.PdfViewer), {
   ssr: false,
-  loading: () => <p className="text-center">Loading PDF Viewer...</p>, 
+  loading: () => <p className="text-center p-4">Loading PDF Viewer...</p>,
 });
-
 
 export default function Page() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -42,12 +35,10 @@ export default function Page() {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.details || `Error: ${response.statusText}`);
       }
-
       const result = await response.json();
       setExtractedData(result);
       toast.success("Extraction Successful!", {
@@ -64,58 +55,35 @@ export default function Page() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <ResizablePanelGroup direction="horizontal" className="w-full h-full">
-        <ResizablePanel defaultSize={50}>
-          <div className="flex h-full items-center justify-center p-6">
-            <Card className="w-full h-full">
-              <CardHeader>
-                <CardTitle>PDF Viewer</CardTitle>
-              </CardHeader>
-              <CardContent className="h-[calc(100%-4rem)]">
-                {selectedFile ? (
-                  <PdfViewer file={selectedFile} />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-muted-foreground">
-                    <p>Upload a PDF to view it here.</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={50}>
-          <div className="flex h-full flex-col p-6 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Upload & Extract</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-4">
-                <PdfUploader onFileChange={setSelectedFile} />
-                <Button onClick={handleExtract} disabled={!selectedFile || isLoading}>
-                  {isLoading ? 'Extracting...' : 'Extract with AI'}
-                </Button>
-              </CardContent>
-            </Card>
-            <Card className="flex-grow overflow-auto">
-              <CardHeader>
-                <CardTitle>Extracted Data</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {extractedData ? (
-                  <InvoiceForm 
-                    initialData={extractedData} 
-                    originalFile={selectedFile} 
-                  />
-                ) : (
-                  <p className="text-muted-foreground">Data will appear here after extraction.</p>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+    <main className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4 p-4">
+    <div className="flex flex-col h-full bg-white rounded-lg overflow-hidden md:col-span-3"> 
+      <div className="flex-shrink-0 p-4 border-b font-semibold bg-white text-foreground">PDF CONTROLS</div> 
+      <div className="flex-grow bg-gray-100 p-2 overflow-hidden">
+          {selectedFile
+            ? <PdfViewer file={selectedFile} />
+            : <div className="flex items-center justify-center h-full text-muted-foreground"><p>Upload a PDF to view it here.</p></div>
+          }
+      </div>
+    </div>
+
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden md:col-span-2">
+          {extractedData ? (
+            <DataPanel initialData={extractedData} originalFile={selectedFile} />
+          ) : (
+            <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Upload & Extract</h2>
+                <div className="space-y-4">
+                  <PdfUploader onFileChange={setSelectedFile} />
+                  <Button onClick={handleExtract} disabled={!selectedFile || isLoading} className="w-full">
+                      {isLoading ? 'Extracting...' : 'Extract with AI'}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-4">
+                  Upload an invoice to begin the automated extraction process.
+                </p>
+            </div>
+          )}
+      </div>
     </main>
   );
 }
