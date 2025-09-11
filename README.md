@@ -6,8 +6,8 @@ A full-stack web application designed to streamline invoice processing. Users ca
 
 ## Live Demo
 
-* **Frontend Application:** `[Frontend Site](https://pdf-invoice-extractor-web.vercel.app/)`
-* **Backend API:** `[Backend Deployment](https://pdf-invoice-extractor-api.vercel.app/)`
+* **Frontend Application:** [Frontend Site](https://pdf-invoice-extractor-web.vercel.app/)
+* **Backend API:** [Backend Deployment](https://pdf-invoice-extractor-api.vercel.app/)
 
 ## Features
 
