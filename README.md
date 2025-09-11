@@ -17,7 +17,9 @@ A full-stack web application designed to streamline invoice processing. Users ca
 <img width="2326" height="812" alt="image" src="https://github.com/user-attachments/assets/1a275a5e-24e7-422e-b297-817407d33162" />
 
 * **Editing and Updating the saved Invoice:**
-<img width="2326" height="812" alt="image" src="https://github.com/user-attachments/assets/f1399f44-b89e-4c29-a50a-a5b2f4f4f1b8" />
+<img width="2174" height="1914" alt="pdf-invoice-extractor-web vercel app_invoices_68c25cb0d4bcbeff5df22be6" src="https://github.com/user-attachments/assets/69872219-4582-41da-afab-beb968f35728" />
+<img width="2237" height="723" alt="image" src="https://github.com/user-attachments/assets/55ef6ebe-b49a-4830-b6ef-b8a7a4abd8bf" />
+
 
 * **Deleting the Invoice:**
 <img width="2274" height="648" alt="image" src="https://github.com/user-attachments/assets/9454408f-4602-497b-91da-9bb86e7f7af8" />
@@ -137,3 +139,12 @@ The backend provides the following RESTful endpoints.
 | `/api/invoices/:id` | `GET` | Retrieves a single invoice by its unique ID. |
 | `/api/invoices/:id` | `PUT` | Updates an existing invoice by its ID. |
 | `/api/invoices/:id` | `DELETE` | Deletes an invoice by its ID. |
+
+---
+
+## Contact Me:
+
+Thank you for giving me this opportunity. I would like to gain a chance to showcase my skills and abilities at your organization too. I hope that you would consider this. 
+
+* **LinkedIn:** [linkedin.com/in/Sanyam Phartyal](https://www.linkedin.com/in/sanyam-phartyal-a21baa350/)
+* **Email:** [sanyamphartyal822@gmail.com](mailto:sanyamphartyal822@gmail.com)
