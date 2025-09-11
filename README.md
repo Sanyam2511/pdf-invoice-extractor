@@ -1,135 +1,150 @@
-# Turborepo starter
+# PDF Invoice Data Extractor
 
-This Turborepo starter is maintained by the Turborepo core team.
+A full-stack web application designed to streamline invoice processing. Users can upload a PDF invoice, view it in-browser, and use the Google Gemini AI to automatically extract key information. The extracted data is then populated into a fully editable form, allowing for corrections before being saved to a MongoDB database. The application features full CRUD (Create, Read, Update, Delete) functionality for managing saved invoices.
 
-## Using this example
+---
 
-Run the following command:
+## Live Demo
 
-```sh
-npx create-turbo@latest
+* **Frontend Application:** [Frontend Site](https://pdf-invoice-extractor-web.vercel.app/)
+* **Backend API:** [Backend Deployment](https://pdf-invoice-extractor-api.vercel.app/)
+
+## Screenshots
+* **Extraction Of PDF and Split Layout:**
+<img width="2174" height="2432" alt="pdf-invoice-extractor-web vercel app_" src="https://github.com/user-attachments/assets/0473f7b8-eee8-4d5a-a75b-26bf587f68d0" />
+
+* **Saving the Extracted Invoice:**
+<img width="2326" height="812" alt="image" src="https://github.com/user-attachments/assets/1a275a5e-24e7-422e-b297-817407d33162" />
+
+* **Editing and Updating the saved Invoice:**
+<img width="2174" height="1914" alt="pdf-invoice-extractor-web vercel app_invoices_68c25cb0d4bcbeff5df22be6" src="https://github.com/user-attachments/assets/69872219-4582-41da-afab-beb968f35728" />
+<img width="2237" height="723" alt="image" src="https://github.com/user-attachments/assets/55ef6ebe-b49a-4830-b6ef-b8a7a4abd8bf" />
+
+
+* **Deleting the Invoice:**
+<img width="2274" height="648" alt="image" src="https://github.com/user-attachments/assets/9454408f-4602-497b-91da-9bb86e7f7af8" />
+<img width="2373" height="1258" alt="image" src="https://github.com/user-attachments/assets/a2ae9f14-75aa-4674-b6e6-58db1e6fc4b0" />
+
+## Features
+
+* **In-Browser PDF Viewer:** Upload and view any PDF with multi-page navigation.
+* **AI-Powered Data Extraction:** Utilizes the Google Gemini API to intelligently parse PDF text and extract structured invoice data.
+* **Fully Editable Form:** A dynamic and user-friendly form is pre-populated with the AI's extracted data, allowing for easy review, correction, and addition/removal of line items.
+* **Full CRUD Functionality:** Create, Read, Update, and Delete saved invoice records in the database.
+* **Searchable Invoice List:** A central dashboard to view all saved invoices, with real-time search by Vendor Name or Invoice Number.
+* **Monorepo Architecture:** Built with Turborepo for efficient management of the separate frontend and backend applications.
+
+## Tech Stack
+
+* **Monorepo:** Turborepo + pnpm
+* **Frontend:** Next.js (App Router), React, TypeScript, Tailwind CSS, shadcn/ui
+* **Backend:** Node.js, Express, TypeScript
+* **Database:** MongoDB Atlas
+* **AI Service:** Google Gemini API
+* **Deployment:** Vercel
+
+---
+
+## Getting Started
+
+Follow these instructions to set up and run the project on your local machine.
+
+### Prerequisites
+
+* Node.js v20.x (LTS)
+* pnpm (install via `npm install -g pnpm`)
+* Git
+
+### 1. Setup
+
+First, clone the repository and install the dependencies.
+
+```bash
+# Clone the repository
+git clone [ADD YOUR GITHUB REPO URL HERE]
+
+# Navigate into the project directory
+cd pdf-invoice-extractor
+
+# Install all dependencies for the entire monorepo
+pnpm install
 ```
 
-## What's inside?
+### 2. Environment Variables
 
-This Turborepo includes the following packages/apps:
+The backend API requires a `.env` file with your database connection string and AI API key.
 
-### Apps and Packages
+1. Navigate to the API directory: `cd apps/api`
+2. Create a new file named `.env`
+3. Add the following variables, replacing the placeholders with your actual credentials.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```env
+# /apps/api/.env
+MONGODB_URI=mongodb+srv://user:<password>@cluster.mongodb.net/database_name
+GEMINI_API_KEY=YourGoogleGeminiApiKeyHere
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 3. Running the Development Server
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+You can run both the frontend and backend servers concurrently with a single command from the **root** of the project.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+pnpm dev
 ```
 
-### Develop
+* **Frontend:** `http://localhost:3000`
+* **Backend:** `http://localhost:8000`
 
-To develop all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
+## API Documentation
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+The backend provides the following RESTful endpoints.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+### AI Extraction
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+* **Endpoint:** `POST /api/extract`
+* **Description:** Receives a PDF file, extracts its text, and returns AI-parsed JSON data.
+* **Request Body:** `multipart/form-data` with a single file field named `invoice`.
+* **Successful Response (200):** A JSON object with the extracted invoice data.
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```json
+{
+  "vendor": {
+    "name": "East Repair Inc.",
+    "address": "1912 Harvest Lane, New York, NY 12210"
+  },
+  "invoice": {
+    "number": "US-001",
+    "date": "11/02/2019",
+    "total": 154.06
+  },
+  "lineItems": [
+    {
+      "description": "Front and rear brake cables",
+      "unitPrice": 100,
+      "quantity": 1,
+      "total": 100
+    }
+  ]
+}
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Invoice CRUD Endpoints
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+| Endpoint | Method | Description |
+|:---------|:-------|:------------|
+| `/api/invoices` | `POST` | Creates a new invoice record from JSON data. |
+| `/api/invoices` | `GET` | Retrieves a list of all invoices. Supports search via `?q=`. |
+| `/api/invoices/:id` | `GET` | Retrieves a single invoice by its unique ID. |
+| `/api/invoices/:id` | `PUT` | Updates an existing invoice by its ID. |
+| `/api/invoices/:id` | `DELETE` | Deletes an invoice by its ID. |
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+---
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+## Contact Me:
 
-## Useful Links
+Thank you for giving me this opportunity. I would like to gain a chance to showcase my skills and abilities at your organization too. I hope that you would consider this. 
 
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+* **LinkedIn:** [linkedin.com/in/Sanyam Phartyal](https://www.linkedin.com/in/sanyam-phartyal-a21baa350/)
+* **Email:** [sanyamphartyal822@gmail.com](mailto:sanyamphartyal822@gmail.com)
