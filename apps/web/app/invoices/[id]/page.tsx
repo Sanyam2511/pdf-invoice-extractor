@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Invoice } from '@/lib/types';
-import { InvoiceForm } from '@/components/InvoiceForm';
+import { DataPanel } from '@/components/DataPanel'; 
 import { toast } from 'sonner';
 
 export default function EditInvoicePage() {
@@ -36,17 +36,16 @@ export default function EditInvoicePage() {
   }, [id, router]);
 
   if (isLoading) {
-    return <div className="container mx-auto p-8">Loading invoice...</div>;
+    return <div className="p-8">Loading invoice...</div>;
   }
 
   if (!invoice) {
-    return <div className="container mx-auto p-8">Invoice not found.</div>;
+    return <div className="p-8">Invoice not found.</div>;
   }
-  
+
   return (
-    <div className="container mx-auto p-8">
-        <h1 className="text-3xl font-bold mb-6">Edit Invoice</h1>
-        <InvoiceForm
+    <div className="flex-grow">
+        <DataPanel
           initialData={invoice}
           originalFile={null} 
           invoiceId={id as string} 
