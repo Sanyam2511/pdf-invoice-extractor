@@ -12,8 +12,8 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-16 flex-col items-center border-r bg-white py-4">
       <Avatar className="h-10 w-10">
-            <AvatarImage src="/ldl.png" alt="@Sanyam" />
-            <AvatarFallback>SY</AvatarFallback>
+            <AvatarImage src="/ldl.png" alt="ldl icon" />
+            <AvatarFallback>ldl</AvatarFallback>
         </Avatar>
 
       <nav className="flex flex-col items-center gap-4 mt-8">
@@ -31,8 +31,8 @@ export function Sidebar() {
 
       <div className="mt-auto flex flex-col items-center gap-4">
         <Avatar className="h-10 w-10">
-            <AvatarImage src="/logo.png" alt="@Sanyam" />
-            <AvatarFallback>SY</AvatarFallback>
+            <AvatarImage src="/logo.png" alt="logo" />
+            <AvatarFallback>Logo</AvatarFallback>
         </Avatar>
         <span className="text-xs text-gray-500">v 1.0.4</span>
       </div>

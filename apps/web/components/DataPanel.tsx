@@ -6,14 +6,12 @@ import { toast } from 'sonner';
 import { Invoice, LineItem } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Button } from './ui/button';
-import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
-  Download, Printer, Trash2, XCircle, CheckCircle, AlertCircle, User, MessageSquare,
+  Download, Trash2, XCircle, CheckCircle, User, MessageSquare,
   FileText, Sigma, Grip, Hash, MapPin, Building, Mail
 } from 'lucide-react';
 
@@ -100,7 +98,6 @@ export function DataPanel({ initialData, originalFile, invoiceId }: DataPanelPro
 
   return (
     <div className="flex flex-col h-full bg-white text-black">
-      {/* Panel Header */}
       <div className="flex-shrink-0 p-6 border-b bg-white">
         <div className="flex items-center justify-between">
           <div>
@@ -120,7 +117,6 @@ export function DataPanel({ initialData, originalFile, invoiceId }: DataPanelPro
         </div>
       </div>
 
-      {/* Form Area with Scrolling */}
       <div className="flex-grow overflow-auto p-6 bg-gray-50">
         <Accordion type="multiple" defaultValue={['customer-info', 'invoice-details', 'summary', 'line-items']} className="w-full space-y-4">
           
