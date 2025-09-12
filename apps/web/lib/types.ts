@@ -24,6 +24,7 @@ export interface InvoiceDetails {
   total: number;
   poNumber: string;
   poDate: string;
+  locale:string;
 }
 
 export interface Invoice {

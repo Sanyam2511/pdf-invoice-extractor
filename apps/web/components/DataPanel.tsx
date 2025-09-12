@@ -26,7 +26,7 @@ interface DataPanelProps {
 
 const defaultInvoice: Invoice = {
   vendor: { name: '', address: '', taxId: '', customerCode: '', contactName: '' },
-  invoice: { number: '', date: '', currency: '', subtotal: 0, total: 0, taxPercent: 0, poNumber: '', poDate: '', Locale: '' },
+  invoice: { number: '', date: '', currency: '', subtotal: 0, total: 0, taxPercent: 0, poNumber: '', poDate: '', locale: '' },
   lineItems: [],
 };
 
