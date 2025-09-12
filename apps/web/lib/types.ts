@@ -11,6 +11,8 @@ export interface Vendor {
   name: string;
   address: string;
   taxId: string;
+  customerCode?: string;
+  contactName?: string;
 }
 
 export interface InvoiceDetails {
