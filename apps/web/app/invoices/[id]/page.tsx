@@ -13,6 +13,7 @@ export default function EditInvoicePage() {
 
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showLineItems, setShowLineItems] = useState(false); // Add this state
 
   useEffect(() => {
     if (id) {
@@ -48,7 +49,9 @@ export default function EditInvoicePage() {
         <DataPanel
           initialData={invoice}
           originalFile={null} 
-          invoiceId={id as string} 
+          invoiceId={id as string}
+          showLineItems={showLineItems}
+          onToggleLineItems={setShowLineItems}
         />
     </div>
   );
