@@ -11,7 +11,8 @@ A full-stack web application designed to streamline invoice processing. Users ca
 
 ## Screenshots
 * **Extraction Of PDF and Split Layout:**
-<img width="2174" height="2432" alt="pdf-invoice-extractor-web vercel app_" src="https://github.com/user-attachments/assets/0473f7b8-eee8-4d5a-a75b-26bf587f68d0" />
+<img width="1549" height="1116" alt="image" src="https://github.com/user-attachments/assets/7f7e404c-e909-4ec9-aefc-9c6b84dee18e" />
+
 
 * **Saving the Extracted Invoice:**
 <img width="2326" height="812" alt="image" src="https://github.com/user-attachments/assets/1a275a5e-24e7-422e-b297-817407d33162" />
